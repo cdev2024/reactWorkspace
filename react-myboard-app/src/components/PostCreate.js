@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ApiService from "../services/ApiService";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PostCreate = () => {
   const [userName, setUserName] = useState("");
@@ -9,10 +9,13 @@ const PostCreate = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const boardId = location.state.boardId; // state에서 boardId를 가져 옴
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const postData = {
+      board_id: boardId, // 게시판 ID 포함: 서버가 기대하는 필드 명 확인
       user_name: userName,
       password: password,
       email: email,
@@ -23,7 +26,7 @@ const PostCreate = () => {
     try {
       const response = await ApiService.createPost(postData);
       console.log("Post created successfully: ", response.data);
-      navigate("/posts"); // 작성 완료 후 게시글 목록 페이지로 이동
+      navigate(`/board/${boardId}`); // 작성 완료 후 해당 게시판 게시글 목록 페이지로 이동
     } catch (error) {
       console.error("Error creating post : ", error);
     }

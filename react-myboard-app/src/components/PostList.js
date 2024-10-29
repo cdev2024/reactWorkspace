@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../services/ApiService";
 import Post from "./Post";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Container, List, ListItem, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const PostList = () => {
-  const { boardId } = useParams(); // boardId를 URL에서 받아오기
+  // const { boardId } = useParams(); // boardId를 URL에서 받아오기
+  const boardId = useSelector((state) => state.boardState.boardId);
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -21,6 +24,11 @@ const PostList = () => {
 
     loadPosts();
   }, [boardId]);
+
+  const handleCreatePost = (boardId) => {
+    //navigate.apply(`/create-post`, { state: { boardId } });
+    navigate("create-post");
+  };
 
   return (
     <Container>
@@ -37,8 +45,7 @@ const PostList = () => {
       <Button
         variant="contained"
         color="primary"
-        component={Link}
-        to="/create-post"
+        onClick={() => handleCreatePost(boardId)}
         sx={{ mb: 2 }}
       >
         게시글 작성

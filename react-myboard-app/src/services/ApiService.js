@@ -38,6 +38,11 @@ const ApiService = {
       password: password, // 비밀번호 전달
     });
   },
+
+  // 게시글 수정 API 호출
+  updatePost(postId, postData) {
+    return axios.put(`${API_BASE_URL}/post/${postId}`, postData);
+  },
 };
 
 export default ApiService;

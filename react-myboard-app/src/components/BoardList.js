@@ -8,10 +8,14 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setBoardId } from "../store/slices/boardSlice";
 
 const BoardList = () => {
   const [boards, setBoards] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   //컴포넌트가 마운트될 때 데이터를 불러오기
   useEffect(() => {
@@ -28,6 +32,12 @@ const BoardList = () => {
     loadBoards();
   }, []);
 
+  const handleBoardClick = (boardId) => {
+    dispatch(setBoardId(boardId));
+    navigate("/posts");
+    //navigate(`/board/${boardId}`);
+  };
+
   return (
     <Container>
       <Typography variant="h4">게시판 목록</Typography>
@@ -35,9 +45,8 @@ const BoardList = () => {
         {boards.map((board) => (
           <ListItem
             key={board.board_id}
-            button
-            component={Link}
-            to={`/board/${board.board_id}`}
+            button="true"
+            onClick={() => handleBoardClick(board.board_id)}
           >
             <ListItemText primary={board.board_name} />
           </ListItem>
