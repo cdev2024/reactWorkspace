@@ -29,7 +29,7 @@ const App = () => {
         <Route path="/create-post" element={<PostCreate />} />
 
         {/* 게시글 수정 페이지 */}
-        <Route path="/edit-post/:id" element={<PostEdit />} />
+        <Route path="/edit-post/:postId" element={<PostEdit />} />
       </Routes>
     </div>
   );
