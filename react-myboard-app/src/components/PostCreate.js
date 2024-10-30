@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import ApiService from "../services/ApiService";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const PostCreate = () => {
   const [userName, setUserName] = useState("");
@@ -9,8 +10,9 @@ const PostCreate = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
-  const boardId = location.state.boardId; // state에서 boardId를 가져 옴
+  // const location = useLocation();
+  // const boardId = location.state.boardId; // state에서 boardId를 가져 옴
+  const boardId = useSelector((state) => state.boardState.boardId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +28,8 @@ const PostCreate = () => {
     try {
       const response = await ApiService.createPost(postData);
       console.log("Post created successfully: ", response.data);
-      navigate(`/board/${boardId}`); // 작성 완료 후 해당 게시판 게시글 목록 페이지로 이동
+      // navigate(`/board/${boardId}`); // 작성 완료 후 해당 게시판 게시글 목록 페이지로 이동
+      navigate("/posts");
     } catch (error) {
       console.error("Error creating post : ", error);
     }

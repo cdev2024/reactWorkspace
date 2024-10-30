@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import ApiService from "../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { fetchPostDetails } from "../store/slices/postSlice";
 
 const Post = ({ post }) => {
   const [showModal, setShowModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // 모달 스타일
   const modalStyle = {
@@ -35,18 +37,22 @@ const Post = ({ post }) => {
   const handleSubmit = async () => {
     setErrorMessage(""); //오류메시지 초기화
     try {
-      await ApiService.fetchPostDetails(post.id, password);
-      // 비밀번호가 맞으면 게시글 상세 페이지로 이동
-      navigate(`/post/${post.id}`, {
-        state: { password },
-      });
+      // await ApiService.fetchPostDetails(post.id, password);
+      // // 비밀번호가 맞으면 게시글 상세 페이지로 이동
+      // navigate(`/post/${post.id}`, {
+      //   state: { password },
+      // });
+      const resultAction = await dispatch(
+        fetchPostDetails({ postId: post.id, password })
+      );
+      if (fetchPostDetails.fulfilled.match(resultAction)) {
+        navigate(`/post/${post.id}`, { state: { password } });
+      } else {
+        setErrorMessage("비밀번호가 잘못되었습니다.다시 시도해주세요.");
+      }
     } catch (error) {
       console.error("Error fetching post details: ", error);
-      if (error.response && error.response.status === 400) {
-        setErrorMessage("비밀번호가 잘못되었습니다. 다시시도해주세요.");
-      } else {
-        setErrorMessage("오류가 발생했습니다. 다시 시도해주세요.");
-      }
+      setErrorMessage("오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
